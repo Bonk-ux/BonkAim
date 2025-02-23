@@ -29,7 +29,7 @@ snap_line_inner.Thickness = 1
 local Settings = {
     ["Combat"] = {
         ["Aimbot"] = {
-            ["Enabled"]    = false,
+            ["Enabled"]    = true,
             ["Mode"]       = "None",
             ["Target"]     = "None",
             ["Enabled2"]   = false,
@@ -228,35 +228,3 @@ oldfromOrientation = hookfunction(CFrame.fromOrientation, newcclosure(function(p
 
     return oldfromOrientation(p, y, r)
 end))
-
-    local ForceHead = true
-    local booms; booms = hookmetamethod(game, "__namecall", newcclosure(function(...)
-        local Method = getnamecallmethod()
-        local args   = {...}
-        local self   = args[1]
-        if Method == "FireServer" then
-            if (args[2] == 10 and args[3] == "Hit" and (args[7] == "Torso" or args[7] == "Head")) then
-                if ForceHead then
-                    args[7] = "Head"
-                    args[8] = Vector3.zero
-                end    
-                return booms(unpack(args))
-            end
-        end
-        return booms(...)
-    end))
-    --
-    local Special3 = true
-    local firese = Instance.new('RemoteEvent').FireServer
-    local Mods2
-    Mods2 = hookmetamethod(game, "__namecall", newcclosure(function(...)
-        local Method = getnamecallmethod()
-        local args = {...}
-        local self = args[1]
-        if Method == "FireServer" and Special3 then
-            task.spawn(function()
-                firese(self, 2, true)
-            end)
-        end
-        return Mods2(...)
-    end))
