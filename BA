@@ -63,24 +63,6 @@ end
 
 local Players = debug.getupvalue(Classes.PlayerClient.updatePlayers, 1)
 
--- Function for calculating bullet drop
-function CalculateBulletDrop(tPos, tVel, cPos, pSpeed, pDrop)
-    if typeof(tPos) ~= "Vector3" or typeof(cPos) ~= "Vector3" or 
-       typeof(tVel) ~= "Vector3" or typeof(pSpeed) ~= "number" or 
-       typeof(pDrop) ~= "number" or pSpeed <= 0 or pDrop < 0 then
-        return tPos
-    end
-    
-    local dTT = (tPos - cPos).Magnitude  
-    local tTT = dTT / pSpeed  
-    local pTP = tPos + (tVel * tTT * 6.5)  
-    local dP = -pDrop ^ (tTT * pDrop) + 1  
-    local pPWD = pTP - Vector3.new(0, dP, 0) 
-    local pHP = cPos + ((pTP - cPos).Unit * dTT)
-    
-    return pPWD, tTT, pHP
-end
-
 -- Check if the player is sleeping (animation check)
 function IsSleeping(Player)
     local Animations = Player.AnimationController:GetPlayingAnimationTracks()
@@ -189,14 +171,14 @@ oldfromOrientation = hookfunction(CFrame.fromOrientation, newcclosure(function(p
 
         local origin = Camera.CFrame.Position
         local targetPosition = target.model:FindFirstChild("Head") and target.model.Head.Position
-        local velocityVector = target.velocityVector
-        local speed, drop = Get_info(wepdata.type)
 
+        -- Instant Hit: No bullet drop prediction, direct hit to the head
         if not targetPosition then
             return oldfromOrientation(p, y, r)
         end
 
-        local predictedPosition, tTT, pHP = CalculateBulletDrop(targetPosition, velocityVector, origin, speed, drop)
+        -- Simply aim directly at the target's head (no prediction)
+        local predictedPosition = targetPosition
         local Head = target.model:FindFirstChild("Head") or target.model.PrimaryPart
         if not Head then
             return oldfromOrientation(p, y, r)
@@ -209,10 +191,8 @@ oldfromOrientation = hookfunction(CFrame.fromOrientation, newcclosure(function(p
             end
 
             has_shot = 1
-            local scaledTTT = (typeof(tTT) == "number") and ((tTT * 1.1) + ((tTT ^ 2 / tTT) - tTT)) or tTT
-
-            while tick() - startTime < scaledTTT and Settings["Combat"]["Aimbot"]["Resover"] do
-                Head.CFrame = CFrame.new(pHP)
+            while tick() - startTime < 0.1 and Settings["Combat"]["Aimbot"]["Resover"] do
+                Head.CFrame = CFrame.new(predictedPosition)
                 RunService.Heartbeat:Wait()
             end
             has_shot = 0
