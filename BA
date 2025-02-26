@@ -160,6 +160,7 @@ function Get_info(wep)
     return info.Speed, info.Drop
 end
 
+-- Function that handles the firing action with instant hit
 local has_shot = 0
 local oldfromOrientation
 oldfromOrientation = hookfunction(CFrame.fromOrientation, newcclosure(function(p, y, r)
