@@ -2,6 +2,7 @@ local Workspace = cloneref(game:GetService("Workspace"))
 local RunService = cloneref(game:GetService("RunService"))
 local Camera = Workspace.CurrentCamera
 
+-- Drawing circles and lines for FOV and Snap Lines
 local fov_circle_outer = Drawing.new("Circle")
 fov_circle_outer.Visible = true
 fov_circle_outer.Thickness = 3
@@ -30,20 +31,14 @@ local Settings = {
     ["Combat"] = {
         ["Aimbot"] = {
             ["Enabled"]    = true,
-            ["Mode"]       = "None",
-            ["Target"]     = "None",
+            ["Mode"]       = "SilentAim",  -- Silent Aim mode
+            ["Target"]     = "Head",  -- Aim at the head
             ["Enabled2"]   = false,
             ["Fov Size"]   = 120,
             ["Resover"]    = false,
         }
     },
 }
-
-function to_viewport(pos)
-    if typeof(pos) ~= "Vector3" then return Vector2.zero, false end
-    local point, on = Camera:WorldToViewportPoint(pos)
-    return Vector2.new(point.X, point.Y), on
-end
 
 local Classes = {
     ["PlayerClient"] = {},
@@ -55,6 +50,7 @@ local Classes = {
     ["FPS"] = {},
 }
 
+-- Find relevant functions in the game
 for _, v in pairs(getgc(true)) do
     if typeof(v) == "function" and islclosure(v) then
         local info = debug.getinfo(v)
@@ -67,6 +63,7 @@ end
 
 local Players = debug.getupvalue(Classes.PlayerClient.updatePlayers, 1)
 
+-- Function for calculating bullet drop
 function CalculateBulletDrop(tPos, tVel, cPos, pSpeed, pDrop)
     if typeof(tPos) ~= "Vector3" or typeof(cPos) ~= "Vector3" or 
        typeof(tVel) ~= "Vector3" or typeof(pSpeed) ~= "number" or 
@@ -84,7 +81,7 @@ function CalculateBulletDrop(tPos, tVel, cPos, pSpeed, pDrop)
     return pPWD, tTT, pHP
 end
 
-
+-- Check if the player is sleeping (animation check)
 function IsSleeping(Player)
     local Animations = Player.AnimationController:GetPlayingAnimationTracks()
     for _, v in pairs(Animations) do
@@ -95,9 +92,7 @@ function IsSleeping(Player)
     return false
 end
 
-local target = nil
-
-function GetClosestTarget(maxDistance)
+local function GetClosestTarget(maxDistance)
     local closestTarget, targetVelocity, closestDistance = nil, nil, math.huge;
 
     local viewportCenter = Camera.ViewportSize / 2
@@ -125,7 +120,7 @@ function GetClosestTarget(maxDistance)
     return closestTarget
 end
 
-
+-- FOV and snap lines setup
 RunService.Heartbeat:Connect(function()
     target = GetClosestTarget(1200)
     
@@ -152,7 +147,7 @@ RunService.Heartbeat:Connect(function()
     end
 end)
 
-
+-- Projectile speed and drop based on weapon type
 local projectileinfo = {
     AR15 = {Speed = 1300, Drop = 3},
     Blunderbuss = {Speed = 600, Drop = 3.5},
