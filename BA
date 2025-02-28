@@ -8,6 +8,7 @@ fov_circle_outer.Thickness = 3
 fov_circle_outer.Color = Color3.fromRGB(0, 0, 0)
 fov_circle_outer.Position = Camera.ViewportSize / 2
 fov_circle_outer.Radius = 85
+
 -- // FOV Circle & Snapline
 local fov_circle = Drawing.new("Circle")
 fov_circle.Visible = true
@@ -70,6 +71,7 @@ local Classes = {
     ["RangedWeaponClient"] = {},
     ["GetEquippedItem"] = {},
     ["FPS"] = {},
+
 -- // Projectile Data
 local projectileinfo = {
     AR15 = {Speed = 1300, Drop = 3},
@@ -116,7 +118,6 @@ function CalculateBulletDrop(tPos, tVel, cPos, pSpeed, pDrop)
     
     return pPWD, tTT, pHP
 end
-
 
 function IsSleeping(Player)
     local Animations = Player.AnimationController:GetPlayingAnimationTracks()
@@ -170,7 +171,6 @@ function GetClosestTarget(maxDistance)
     end
     return closestTarget
 end
-
 
 RunService.Heartbeat:Connect(function()
     target = GetClosestTarget(1200)
