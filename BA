@@ -14,7 +14,7 @@ fov_circle_inner.Visible = true
 fov_circle_inner.Thickness = 1
 fov_circle_inner.Color = Color3.fromRGB(255, 255, 255)
 fov_circle_inner.Position = Camera.ViewportSize / 2
-fov_circle_inner.Radius = 120
+fov_circle_inner.Radius = 85
 
 local snap_line_outer = Drawing.new("Line")
 snap_line_outer.Visible = false
