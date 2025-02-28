@@ -36,7 +36,7 @@ local Settings = {
             ["Mode"]       = "None",
             ["Target"]     = "None",
             ["Enabled2"]   = false,
-            ["Fov Size"]   = 120,
+            ["Fov Size"]   = 85,
             ["Resover"]    = false,
         }
     },
